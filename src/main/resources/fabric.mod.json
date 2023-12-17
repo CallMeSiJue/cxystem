@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "id": "cxystem",
+  "version": "${version}",
+  "name": "cxysTem",
+  "description": "",
+  "authors": [],
+  "contact": {},
+  "license": "All-Rights-Reserved",
+  "icon": "assets/cxystem/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "cxy.cxystem.client.CxysTemClient"
+    ],
+    "main": [
+      "cxy.cxystem.CxysTem"
+    ]
+  },
+  "mixins": [
+    "cxystem.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}
