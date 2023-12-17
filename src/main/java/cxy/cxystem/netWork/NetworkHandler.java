@@ -10,7 +10,7 @@ public class NetworkHandler {
     /**
      * 定义温度传输id
      */
-    public static final Identifier PLAYER_TEMPERATURE_TICK_TRANSMISSION = new Identifier(CxysTem.MOD_ID, "PLAYER_TEMPERATURE_TICK_TRANSMISSION");
+    public static final Identifier PLAYER_TEMPERATURE_TICK_TRANSMISSION = new Identifier(CxysTem.MOD_ID, "player_temperature_tick_transmission");
 
     public static void registerC2SPackets() {
 

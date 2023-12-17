@@ -1,11 +1,19 @@
 package cxy.cxystem.client;
 
+import cxy.cxystem.netWork.NetworkHandler;
+import cxy.cxystem.netWork.packet.PlayerTemperatureClientHandler;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CxysTemClient implements ClientModInitializer {
+
+    private static final Logger log = LoggerFactory.getLogger(CxysTemClient.class);
     private int tickCounter = 0;
 
     @Override
@@ -13,12 +21,19 @@ public class CxysTemClient implements ClientModInitializer {
         ClientTickEvents.START_CLIENT_TICK.register(client -> {
             if (client.world != null) {
                 tickCounter++;
-                if (tickCounter >= 100) { // 每100 ticks发送一次消息，约等于5秒
-                    sendMessage(client);
+                if (tickCounter >= 20) {
+                    log.info("执行 发送消息");
+                    boolean paused = client.isInSingleplayer() && client.isPaused();
+                    if (!paused && !client.player.isCreative() && !client.player.isSpectator()) {
+                        ClientPlayNetworking.send(NetworkHandler.PLAYER_TEMPERATURE_TICK_TRANSMISSION, PacketByteBufs.create());
+                    }
                     tickCounter = 0; // 重置计数器
+                    PlayerTemperatureClientHandler.receive();
                 }
             }
         });
+
+
     }
 
     private void sendMessage(MinecraftClient client) {
@@ -27,4 +42,28 @@ public class CxysTemClient implements ClientModInitializer {
 
         }
     }
+//    //tick
+//        ClientTickEvents.START_CLIENT_TICK.register((client) -> {
+//        if (client.world != null) {
+//            if (client.world.isClient()) {
+//
+//                if (tempTickCounter < tempTickCount) {
+//                    tempTickCounter += 1;
+//                } else if (tempTickCounter >= tempTickCount) {
+//                    boolean paused = client.isInSingleplayer() && client.isPaused();
+//                    if (!paused && !client.player.isCreative() && !client.player.isSpectator()) {
+//                        ClientPlayNetworking.send(ThermNetworkingPackets.PLAYER_TEMP_TICK_C2S_PACKET_ID, PacketByteBufs.create());
+//                    }
+//                    tempTickCounter = 0;
+//                }
+//            }
+//        }
+//
+//        //keybinds
+//        while (showGuiKey.wasPressed()) {
+//            showGui = !showGui;
+//        }
+//
+//    });
+
 }
