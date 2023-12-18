@@ -42,6 +42,13 @@ public class TemHandler {
     }
 
 
+    /**
+     * 计算玩家体感温度状态
+     *
+     * @param player
+     * @param envTemp
+     * @return
+     */
     public static PalyerTempStatus getPlayerTemperature(ClientPlayerEntity player, Double envTemp) {
         double coolTemp = NORMAL_TEM - BASIC_ADAPTATION_TEMP;
         double hotTemp = NORMAL_TEM + BASIC_ADAPTATION_TEMP;

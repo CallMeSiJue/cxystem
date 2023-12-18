@@ -22,8 +22,7 @@ public class PlayerTemperatureServerHandler {
     private static final Logger log = LoggerFactory.getLogger(PlayerTemperatureServerHandler.class);
 
     public static void receive(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender) {
-
-
+        
         double tem = TemHandler.getEnvironmentTemperature(server, player);
         log.info("{} 的环境温度：{}", player.getName(), tem);
         PacketByteBuf sendingdata = PacketByteBufs.create();
