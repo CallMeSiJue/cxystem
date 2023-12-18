@@ -31,7 +31,7 @@ public class CxysTemClient implements ClientModInitializer {
                 }
             }
         });
-
+        // 注册客户端处理
         PlayerTemperatureClientHandler.receive();
     }
 

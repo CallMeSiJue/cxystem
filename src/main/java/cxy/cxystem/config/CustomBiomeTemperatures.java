@@ -9,6 +9,9 @@ import net.minecraft.world.biome.Biome;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 自定义群系系数，没有的话就使用 mc的
+ */
 public class CustomBiomeTemperatures {
     private static final Map<Identifier, Double> customTemperatures = new HashMap<>();
 

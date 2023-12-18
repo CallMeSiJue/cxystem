@@ -7,22 +7,21 @@ import net.minecraft.world.PersistentState;
 import net.minecraft.world.PersistentStateManager;
 import net.minecraft.world.World;
 
+/**
+ * 玩家温度持久化 类
+ */
 public class PlayerTempSL extends PersistentState {
-    @Override
-    public NbtCompound writeNbt(NbtCompound nbt) {
-        return nbt;
-    }
+    private static final Type<PlayerTempSL> type = new Type<>(
+            PlayerTempSL::new, // 若不存在 'StateSaverAndLoader' 则创建
+            PlayerTempSL::createFromNbt, // 若存在 'StateSaverAndLoader' NBT, 则调用 'createFromNbt' 传入参数
+            null // 此处理论上应为 'DataFixTypes' 的枚举，但我们直接传递为空(null)也可以
+    );
+
     public static PlayerTempSL createFromNbt(NbtCompound tag) {
         PlayerTempSL state = new PlayerTempSL();
         //state.totalDirtBlocksBroken = tag.getInt("totalDirtBlocksBroken");
         return state;
     }
-
-    private static Type<PlayerTempSL> type = new Type<>(
-            PlayerTempSL::new, // 若不存在 'StateSaverAndLoader' 则创建
-            PlayerTempSL::createFromNbt, // 若存在 'StateSaverAndLoader' NBT, 则调用 'createFromNbt' 传入参数
-            null // 此处理论上应为 'DataFixTypes' 的枚举，但我们直接传递为空(null)也可以
-    );
 
     public static PlayerTempSL getServerState(MinecraftServer server) {
         // (注：如需在任意维度生效，请使用 'World.OVERWORLD' ，不要使用 'World.END' 或 'World.NETHER')
@@ -39,5 +38,10 @@ public class PlayerTempSL extends PersistentState {
         state.markDirty();
 
         return state;
+    }
+
+    @Override
+    public NbtCompound writeNbt(NbtCompound nbt) {
+        return nbt;
     }
 }

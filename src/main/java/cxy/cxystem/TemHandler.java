@@ -9,6 +9,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 
+/**
+ * 温度处理类
+ */
 public class TemHandler {
     /**
      * 基本高度温度
@@ -28,8 +31,6 @@ public class TemHandler {
      * 基本适应温度
      */
     public static final double BASIC_ADAPTATION_TEMP = 12;
-    private static final double MAX_DAY_TEMPERATURE_ADJUSTMENT = 2.0; // 最大日间温度调整系数
-    private static final double MIN_NIGHT_TEMPERATURE_ADJUSTMENT = -2.0; // 最小夜间温度调整系数
 
     public static Double getEnvironmentTemperature(MinecraftServer server, PlayerEntity player) {
         double reallyTemp = getPlayerReallyTemp(player);
@@ -75,11 +76,17 @@ public class TemHandler {
         World world = player.getWorld();
 
         double reallyBiomeTemp = 50 * playerBiomeTemperature - 7.5;
-        double timeTempEffect = calculateTemperatureCoefficient(world.getTimeOfDay()) * 20 * playerBiomeTemperature;
+        double timeTempEffect = calculateTemperatureCoefficient(world.getTimeOfDay()) * 20 * Math.abs(playerBiomeTemperature);
         return reallyBiomeTemp - (y - BASE_HIGHT) * TEM_EACH_LEVEL + timeTempEffect;
 
     }
 
+    /**
+     * 计算时间温度系数
+     *
+     * @param timeOfDay
+     * @return
+     */
     public static double calculateTemperatureCoefficient(long timeOfDay) {
         double coefficient;
 
