@@ -12,6 +12,11 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * 服务端接受数据并进行处理 返回
+ *
+ * @author Ascs
+ */
 public class PlayerTemperatureServerHandler {
 
     private static final Logger log = LoggerFactory.getLogger(PlayerTemperatureServerHandler.class);
@@ -20,7 +25,7 @@ public class PlayerTemperatureServerHandler {
 
 
         double tem = TemHandler.getEnvironmentTemperature(server, player);
-        log.info("接收端 接受数据");
+        log.info("{} 的环境温度：{}", player.getName(), tem);
         PacketByteBuf sendingdata = PacketByteBufs.create();
         sendingdata.writeDouble(tem);
         ServerPlayNetworking.send(player, NetworkHandler.PLAYER_TEMPERATURE_TICK_TRANSMISSION, sendingdata);
