@@ -27,6 +27,7 @@ public class PlayerTemperatureClientHandler {
                     double temperature = buf.readDouble();
                     log.info("客户端处理数据");
                     coolDown--;
+                    log.info("{} 的环境温度：{}", client.player.getName(), temperature);
                     if (coolDown == 0) {
                         // 在客户端主线程上执行操作
                         client.execute(() -> {

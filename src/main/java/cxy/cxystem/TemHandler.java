@@ -1,13 +1,23 @@
 package cxy.cxystem;
 
+import com.google.common.util.concurrent.AtomicDouble;
 import cxy.cxystem.config.CustomBiomeTemperatures;
+import cxy.cxystem.config.TempConfig;
 import cxy.cxystem.status.PalyerTempStatus;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.CampfireBlock;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
+
+import java.util.Objects;
+import java.util.stream.Stream;
 
 /**
  * 温度处理类
@@ -33,12 +43,65 @@ public class TemHandler {
     public static final double BASIC_ADAPTATION_TEMP = 12;
 
     public static Double getEnvironmentTemperature(MinecraftServer server, PlayerEntity player) {
-        double reallyTemp = getPlayerReallyTemp(player);
-        World world = player.getWorld();
-        if (world.isRaining()) {
-            reallyTemp = reallyTemp - 10;
+        TempConfig tempConfig = TempConfig.getInstance();
+        AtomicDouble reallyTemp = new AtomicDouble(getPlayerReallyTemp(player));
+
+        Biome.Precipitation precip = player.getWorld().getBiome(player.getBlockPos()).value().getPrecipitation(player.getBlockPos());
+
+        //下雪还是 下雨
+        if (precip == Biome.Precipitation.RAIN) {
+            if (player.getWorld().isRaining()) {
+                if (player.isWet() && !player.isTouchingWater()) {
+                    reallyTemp.addAndGet(-8);
+                }
+            }
+        } else if (precip == Biome.Precipitation.SNOW) {
+            if (player.getWorld().isRaining()) {
+                reallyTemp.addAndGet(-16);
+            }
         }
-        return reallyTemp;
+
+
+        // 判断加温 分块
+        Vec3d pos = player.getPos();
+        Stream<BlockState> heatBlockBox = player.getWorld().getStatesInBox(Box.of(pos, 4, 4, 4));
+        heatBlockBox.forEach((state) -> {
+            tempConfig.heatingBlocks.forEach((b, t) -> {
+                if (Objects.equals(state.getBlock().toString(), b)) {
+
+                    if (state.isOf(Blocks.CAMPFIRE) || state.isOf(Blocks.SOUL_CAMPFIRE)) { //hard code to keep unlit campfires from heating.
+                        if (state.get(CampfireBlock.LIT)) {
+                            reallyTemp.addAndGet(t);
+                        }
+                    } else {
+                        reallyTemp.addAndGet(t);
+                    }
+
+                }
+            });
+        });
+
+        // 判断 降温 分块
+        Stream<BlockState> coldBlockBox = player.getWorld().getStatesInBox(Box.of(pos, 2, 3, 2));
+        coldBlockBox.forEach((state) -> {
+            tempConfig.coolingBlocks.forEach((b, t) -> {
+                if (Objects.equals(state.getBlock().toString(), b)) {
+                    reallyTemp.addAndGet(t);
+                }
+            });
+        });
+
+        // 判断 手持 温度
+        tempConfig.heldTempItems.forEach((it, t) -> {
+            if (Objects.equals(player.getInventory().getMainHandStack().getItem().toString(), it)) {
+                reallyTemp.addAndGet(t);
+            }
+            if (Objects.equals(player.getInventory().offHand.get(0).getItem().toString(), it)) {
+                reallyTemp.addAndGet(t);
+            }
+        });
+
+        return reallyTemp.get();
     }
 
 
@@ -52,8 +115,8 @@ public class TemHandler {
     public static PalyerTempStatus getPlayerTemperature(ClientPlayerEntity player, Double envTemp) {
         double coolTemp = NORMAL_TEM - BASIC_ADAPTATION_TEMP;
         double hotTemp = NORMAL_TEM + BASIC_ADAPTATION_TEMP;
-        double veryCoolTemp = NORMAL_TEM - 2 * BASIC_ADAPTATION_TEMP;
-        double veryHotTemp = NORMAL_TEM + 2 * BASIC_ADAPTATION_TEMP;
+        double veryCoolTemp = coolTemp - BASIC_ADAPTATION_TEMP;
+        double veryHotTemp = hotTemp + BASIC_ADAPTATION_TEMP;
 
         if (envTemp <= coolTemp && envTemp > veryCoolTemp) {
             return PalyerTempStatus.COOL;
@@ -95,26 +158,19 @@ public class TemHandler {
      * @return
      */
     public static double calculateTemperatureCoefficient(long timeOfDay) {
-        double coefficient;
 
-        // 时间段1: 0 - 8000 ticks，温度系数从0线性增加到1
-        if (timeOfDay >= 0 && timeOfDay < 8000) {
-            coefficient = timeOfDay / 8000.0;
-        }
-        // 时间段2: 8000 - 20000 ticks，温度系数从1线性减少到-1
-        else if (timeOfDay >= 8000 && timeOfDay < 20000) {
-            coefficient = 1 - 2 * (timeOfDay - 8000) / 12000.0;
-        }
-        // 时间段3: 20000 - 24000 ticks，温度系数从-1线性增加回0
-        else if (timeOfDay >= 20000 && timeOfDay < 24000) {
-            coefficient = -1 + (timeOfDay - 20000) / 4000.0;
-        }
-        // 处理时间超过一天的情况，例如通过取余重置时间
-        else {
+        if (timeOfDay > 24000) {
             timeOfDay = timeOfDay % 24000;
-            coefficient = calculateTemperatureCoefficient(timeOfDay);
         }
+        double period = 24000;
+        double b = 2 * Math.PI / period;
 
-        return coefficient;
+        // 使波形在x=8000时处于2π（一个完整周期的起点）
+        double c = timeOfDay - 8000;
+
+        // 计算并返回余弦函数的值
+        return Math.cos(c * b);
+
+
     }
 }
