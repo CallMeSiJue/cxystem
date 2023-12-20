@@ -1,5 +1,6 @@
 package cxy.cxystem.client;
 
+import cxy.cxystem.dto.PlayerTempState;
 import cxy.cxystem.netWork.NetworkHandler;
 import cxy.cxystem.netWork.packet.PlayerTemperatureClientHandler;
 import net.fabricmc.api.ClientModInitializer;
@@ -12,6 +13,7 @@ import org.slf4j.LoggerFactory;
 public class CxysTemClient implements ClientModInitializer {
 
     private static final Logger log = LoggerFactory.getLogger(CxysTemClient.class);
+    public static PlayerTempState playerData = new PlayerTempState();
     private int tickCounter = 0;
 
     @Override
@@ -32,7 +34,7 @@ public class CxysTemClient implements ClientModInitializer {
             }
         });
         // 注册客户端处理
-        PlayerTemperatureClientHandler.receive();
+        PlayerTemperatureClientHandler.receive(playerData);
     }
 
 

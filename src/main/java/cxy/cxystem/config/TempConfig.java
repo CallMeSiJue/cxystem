@@ -36,14 +36,14 @@ public class TempConfig {
                 "Block{minecraft:packed_ice}", -10,
                 "Block{minecraft:blue_ice}", -20));
 
-        helmetTempItems = List.of(new ArmorTemp("leather_helmet", 1d, 2d));
+        helmetTempItems = List.of(new ArmorTemp("leather_helmet", 1d, 0.95));
 
-        chestplateTempItems = List.of(new ArmorTemp("leather_chestplate", 3d, 6d));
+        chestplateTempItems = List.of(new ArmorTemp("leather_chestplate", 3d, 0.85));
 
-        leggingTempItems = List.of(new ArmorTemp("leather_leggings", 2d, 4d));
+        leggingTempItems = List.of(new ArmorTemp("leather_leggings", 2d, 0.88));
 
-        bootTempItems = List.of(new ArmorTemp("leather_boots", 1d, 2d));
-        
+        bootTempItems = List.of(new ArmorTemp("leather_boots", 1d, 0.92));
+
         heldTempItems = new HashMap<>(Map.of("torch", 5, "lava_bucket", 10, "soul_torch", -5));
     }
 

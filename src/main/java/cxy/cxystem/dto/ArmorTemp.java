@@ -9,7 +9,7 @@ public class ArmorTemp {
     private Double adaptTemperature;
 
     /**
-     * 装备影响的 适温时间。
+     * 装备影响的 保温性能系数 影响 温度的增加或者减少倍率
      */
     private Double adaptTickAdd;
 

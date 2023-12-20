@@ -24,8 +24,11 @@ public class PlayerTemperatureServerHandler {
     public static void receive(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender) {
 
         double tem = TemHandler.getEnvironmentTemperature(server, player);
-        PacketByteBuf sendingdata = PacketByteBufs.create();
-        sendingdata.writeDouble(tem);
-        ServerPlayNetworking.send(player, NetworkHandler.PLAYER_TEMPERATURE_TICK_TRANSMISSION, sendingdata);
+        double playerFeelTemp = TemHandler.getPlayerFeelTemp(player, tem);
+
+        PacketByteBuf sendData = PacketByteBufs.create();
+        sendData.writeDouble(tem);
+        sendData.writeDouble(playerFeelTemp);
+        ServerPlayNetworking.send(player, NetworkHandler.PLAYER_TEMPERATURE_TICK_TRANSMISSION, sendData);
     }
 }

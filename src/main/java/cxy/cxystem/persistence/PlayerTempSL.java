@@ -35,7 +35,7 @@ public class PlayerTempSL extends PersistentState {
         NbtCompound playersNbt = tag.getCompound("players");
         playersNbt.getKeys().forEach(key -> {
             PlayerTempState playerTempState = new PlayerTempState();
-            playerTempState.setFeelTemp(playersNbt.getCompound(key).getDouble("playerFeelTemp"));
+            playerTempState.feelTemp = playersNbt.getCompound(key).getDouble("playerFeelTemp");
 
             UUID uuid = UUID.fromString(key);
             state.players.put(uuid, playerTempState);
@@ -66,7 +66,7 @@ public class PlayerTempSL extends PersistentState {
         players.forEach((uuid, playerData) -> {
             NbtCompound playerNbt = new NbtCompound();
 
-            playerNbt.putDouble("playerFeelTemp", playerData.getFeelTemp());
+            playerNbt.putDouble("playerFeelTemp", playerData.feelTemp);
 
             playersNbt.put(uuid.toString(), playerNbt);
         });
