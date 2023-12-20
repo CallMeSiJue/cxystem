@@ -27,7 +27,7 @@ public class PlayerTemperatureClientHandler {
                 (client, handler, buf, responseSender) -> {
                     // 从数据包中读取数据
                     double temperature = buf.readDouble();
-                    playerData.feelTemp = buf.readDouble();
+                    NetworkHandler.readData(playerData, buf);
                     log.info("客户端处理数据");
                     coolDown--;
                     log.info("  的环境温度：{},体感温度：{}", temperature, playerData.feelTemp);
@@ -38,9 +38,10 @@ public class PlayerTemperatureClientHandler {
                             // 根据接收到的温度数据更新客户端，比如HUD
                             if (client.player != null) {
 
-                                PlayerTempStatus playerTemperature = TemHandler.getPlayerTemperatureStatus(client.player, playerData.feelTemp);
-
-                                client.player.sendMessage(Text.of(playerTemperature.getMessage()));
+                                PlayerTempStatus newStatus = TemHandler.getPlayerTemperatureStatus(client.player, playerData.feelTemp);
+                                if (playerData.playerTempStatus != newStatus.getCode()) {
+                                    client.player.sendMessage(Text.of(newStatus.getMessage()));
+                                }
                             }
                         });
                         coolDown = 10;

@@ -6,7 +6,7 @@ package cxy.cxystem.dto;
 public class PlayerTempState {
     public Double feelTemp = 26d;
 
-    public int playerTempState = 0;
+    public int playerTempStatus = 0;
 
 
 }

@@ -1,7 +1,9 @@
 package cxy.cxystem.netWork.packet;
 
 import cxy.cxystem.TemHandler;
+import cxy.cxystem.dto.PlayerStateDTO;
 import cxy.cxystem.netWork.NetworkHandler;
+import cxy.cxystem.status.PlayerTempStatus;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -25,10 +27,16 @@ public class PlayerTemperatureServerHandler {
 
         double tem = TemHandler.getEnvironmentTemperature(server, player);
         double playerFeelTemp = TemHandler.getPlayerFeelTemp(player, tem);
+        PlayerTempStatus status = TemHandler.getPlayerTemperatureStatus(player, playerFeelTemp);
 
         PacketByteBuf sendData = PacketByteBufs.create();
         sendData.writeDouble(tem);
-        sendData.writeDouble(playerFeelTemp);
+
+        PlayerStateDTO dto = new PlayerStateDTO();
+        dto.setFeelTemp(playerFeelTemp);
+        dto.setPlayerTempStatus(status.getCode());
+
+        NetworkHandler.writeData(sendData, dto);
         ServerPlayNetworking.send(player, NetworkHandler.PLAYER_TEMPERATURE_TICK_TRANSMISSION, sendData);
     }
 }
