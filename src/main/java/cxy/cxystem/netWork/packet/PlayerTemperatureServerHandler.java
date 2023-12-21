@@ -2,6 +2,7 @@ package cxy.cxystem.netWork.packet;
 
 import cxy.cxystem.TemHandler;
 import cxy.cxystem.netWork.NetworkHandler;
+import cxy.cxystem.status.PlayerStatusManage;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -29,6 +30,8 @@ public class PlayerTemperatureServerHandler {
         PacketByteBuf sendData = PacketByteBufs.create();
         sendData.writeDouble(tem);
         sendData.writeDouble(playerFeelTemp);
+        PlayerStatusManage.inVeryCold(player);
+        log.info("玩家的Frozen:{}", player.getFrozenTicks());
         ServerPlayNetworking.send(player, NetworkHandler.PLAYER_TEMPERATURE_TICK_TRANSMISSION, sendData);
     }
 }

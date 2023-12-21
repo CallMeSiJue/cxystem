@@ -16,7 +16,8 @@ public class PlayerStatusManage {
     }
 
     public static void inVeryCold(PlayerEntity player) {
-        player.setFrozenTicks(Optional.of(player.getFireTicks()).orElse(0) + 20);
+        player.setFrozenTicks(Optional.of(player.getFireTicks()).orElse(0) + 40);
+
     }
 
 }
