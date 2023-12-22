@@ -26,10 +26,12 @@ public class NetworkHandler {
     public static void readData(PlayerTempState playerData, PacketByteBuf buf) {
         playerData.feelTemp = buf.readDouble();
         playerData.playerTempStatus = buf.readInt();
+        playerData.freezeCount = buf.readInt();
     }
 
     public static void writeData(PacketByteBuf buf, PlayerStateDTO dto) {
         buf.writeDouble(dto.getFeelTemp());
         buf.writeInt(dto.getPlayerTempStatus());
+        buf.writeInt(dto.getFreezeCount());
     }
 }

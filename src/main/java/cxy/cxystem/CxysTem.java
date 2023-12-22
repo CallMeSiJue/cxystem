@@ -32,7 +32,7 @@ public class CxysTem implements ModInitializer {
             PlayerStateDTO dto = new PlayerStateDTO();
             dto.setFeelTemp(playerState.feelTemp);
             dto.setPlayerTempStatus(playerState.playerTempStatus);
-            
+            dto.setFreezeCount(playerState.freezeCount);
             //
             NetworkHandler.writeData(data, dto);
             server.execute(() -> {
