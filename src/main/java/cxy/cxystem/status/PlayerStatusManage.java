@@ -21,8 +21,12 @@ public class PlayerStatusManage {
         if (state.freezeCount < 200) {
             state.freezeCount += 1;
         }
-        if (state.freezeCount >= 140 && player.age % 40 == 0) {
-            player.damage(player.getDamageSources().freeze(), 1.0f);
+
+    }
+
+    public static void removeCountOnDeath(PlayerTempState state, PlayerEntity player) {
+        if (player.isDead()) {
+            state.reset();
         }
     }
 

@@ -25,9 +25,12 @@ public class CxysTemClient implements ClientModInitializer {
     public void onInitializeClient() {
         // 注册监听器，以便在每个tick执行
         ClientTickEvents.START_CLIENT_TICK.register(client -> {
-
+            if (client.player == null) {
+                return;
+            }
 
             // 处理状态造成的变化
+            PlayerTempState playerData = CxysTemClient.playerData;
             if (playerData.playerTempStatus == PlayerTempStatus.VERY_COOL.getCode()) {
                 PlayerStatusManage.inVeryCold(playerData, client.player);
             } else if (playerData.freezeCount > 0) {
@@ -40,7 +43,6 @@ public class CxysTemClient implements ClientModInitializer {
                 if (tickCounter >= 20) {
                     boolean paused = client.isInSingleplayer() && client.isPaused();
                     if (!paused && !client.player.isCreative() && !client.player.isSpectator()) {
-                        log.info("执行 发送消息");
                         PacketByteBuf packetByteBuf = PacketByteBufs.create();
                         PlayerStateDTO dto = playerData.toDto();
                         NetworkHandler.writeData(packetByteBuf, dto);

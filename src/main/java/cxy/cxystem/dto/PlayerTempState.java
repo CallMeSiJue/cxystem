@@ -5,7 +5,7 @@ package cxy.cxystem.dto;
  */
 public class PlayerTempState {
     public int freezeCount = 0;
-    public Double feelTemp = 26d;
+    public Double feelTemp = 0d;
     public int playerTempStatus = 0;
 
     @Override
@@ -27,5 +27,11 @@ public class PlayerTempState {
         //
 
         return dto;
+    }
+
+    public void reset() {
+        this.freezeCount = 0;
+        this.feelTemp = 26d;
+        this.playerTempStatus = 0;
     }
 }
