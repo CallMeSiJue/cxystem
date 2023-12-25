@@ -1,6 +1,5 @@
 package cxy.cxystem.status;
 
-import cxy.cxystem.dto.PlayerTempState;
 import net.minecraft.entity.player.HungerManager;
 import net.minecraft.entity.player.PlayerEntity;
 
@@ -17,13 +16,5 @@ public class PlayerStatusManage {
         }
     }
 
-    public static void inVeryCold(PlayerTempState state, PlayerEntity player) {
-        if (state.freezeCount < 200) {
-            state.freezeCount += 1;
-        }
-        if (state.freezeCount >= 140 && player.age % 40 == 0) {
-            player.damage(player.getDamageSources().freeze(), 1.0f);
-        }
-    }
 
 }
