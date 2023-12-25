@@ -1,5 +1,6 @@
 package cxy.cxystem.netWork.packet;
 
+import cxy.cxystem.TemHandler;
 import cxy.cxystem.dto.PlayerTempState;
 import cxy.cxystem.netWork.NetworkHandler;
 import cxy.cxystem.status.PlayerTempStatus;
@@ -15,8 +16,8 @@ import org.slf4j.LoggerFactory;
  */
 
 public class PlayerTemperatureClientHandler {
+
     private static final Logger log = LoggerFactory.getLogger(PlayerTemperatureClientHandler.class);
-    private static int oldTemStatus = 0;
 
     public static void receive(PlayerTempState playerData) {
 
@@ -34,10 +35,9 @@ public class PlayerTemperatureClientHandler {
                         // 根据接收到的温度数据更新客户端，比如HUD
                         if (client.player != null) {
 
-
-                            if (playerData.playerTempStatus != oldTemStatus) {
-                                oldTemStatus = playerData.playerTempStatus;
-                                client.player.sendMessage(Text.of(PlayerTempStatus.getByCode(oldTemStatus).getMessage()));
+                            PlayerTempStatus newStatus = TemHandler.getPlayerTemperatureStatus(client.player, playerData.feelTemp);
+                            if (playerData.playerTempStatus != newStatus.getCode()) {
+                                client.player.sendMessage(Text.of(newStatus.getMessage()));
                             }
 
                         }

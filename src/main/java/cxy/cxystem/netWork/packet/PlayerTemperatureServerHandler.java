@@ -5,7 +5,7 @@ import cxy.cxystem.dto.PlayerStateDTO;
 import cxy.cxystem.dto.PlayerTempState;
 import cxy.cxystem.netWork.NetworkHandler;
 import cxy.cxystem.persistence.PlayerTempSL;
-import cxy.cxystem.status.PlayerTempStatus;
+import cxy.cxystem.status.PlayerStatusManage;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -23,24 +23,36 @@ import org.slf4j.LoggerFactory;
  */
 public class PlayerTemperatureServerHandler {
 
+
     private static final Logger log = LoggerFactory.getLogger(PlayerTemperatureServerHandler.class);
 
     public static void receive(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender) {
         PlayerTempState playerState = PlayerTempSL.getPlayerState(player);
         NetworkHandler.readData(playerState, buf);
-        
         double tem = TemHandler.getEnvironmentTemperature(server, player);
-        double playerFeelTemp = TemHandler.getPlayerFeelTemp(player, tem);
-        PlayerTempStatus status = TemHandler.getPlayerTemperatureStatus(player, playerFeelTemp);
+        playerState.feelTemp = TemHandler.getPlayerFeelTemp(player, tem);
+        playerState.playerTempStatus = TemHandler.getPlayerTemperatureStatus(player, playerState.feelTemp).getCode();
 
+        // 处理伤害
+        if (playerState.freezeCount > 140) {
+            player.damage(player.getWorld().getDamageSources().freeze(), 0.5f);
+            if (player.isDead()) {
+                playerState.reset();
+            }
+        }
+        // 处理减速
+
+//        PlayerStatusManage.removePowderSnowSlow(player);
+//        PlayerStatusManage.addPowderSnowSlowIfNeeded(player, playerState);
+        PlayerStatusManage.reduceHungryIfNeed(player, playerState);
 
         // 发送数据包到客户端
         PacketByteBuf sendData = PacketByteBufs.create();
         sendData.writeDouble(tem);
         //
         PlayerStateDTO dto = new PlayerStateDTO();
-        dto.setFeelTemp(playerFeelTemp);
-        dto.setPlayerTempStatus(status.getCode());
+        dto.setFeelTemp(playerState.feelTemp);
+        dto.setPlayerTempStatus(playerState.playerTempStatus);
         dto.setFreezeCount(playerState.freezeCount);
         //
         NetworkHandler.writeData(sendData, dto);
