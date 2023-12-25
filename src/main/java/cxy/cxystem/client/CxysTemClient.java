@@ -1,6 +1,5 @@
 package cxy.cxystem.client;
 
-import cxy.cxystem.dto.PlayerStateDTO;
 import cxy.cxystem.dto.PlayerTempState;
 import cxy.cxystem.netWork.NetworkHandler;
 import cxy.cxystem.netWork.packet.PlayerTemperatureClientHandler;
@@ -18,6 +17,7 @@ public class CxysTemClient implements ClientModInitializer {
 
     private static final Logger log = LoggerFactory.getLogger(CxysTemClient.class);
     public static PlayerTempState playerData = new PlayerTempState();
+    public static int playerClientOldStatusCode = 0;
     private int tickCounter = 0;
 
     @Override
@@ -33,6 +33,13 @@ public class CxysTemClient implements ClientModInitializer {
             } else if (playerData.freezeCount > 0) {
                 playerData.freezeCount -= 2;
             }
+            if (playerData.playerTempStatus == PlayerTempStatus.VERY_HOT.getCode()) {
+                if (playerData.hotCount < 300) {
+                    playerData.hotCount += 1;
+                }
+            } else if (playerData.hotCount > 0) {
+                playerData.hotCount -= 2;
+            }
             //
 
             // 数据处理
@@ -46,8 +53,8 @@ public class CxysTemClient implements ClientModInitializer {
                     if (!paused && !client.player.isCreative() && !client.player.isSpectator()) {
                         log.info("执行 发送消息");
                         PacketByteBuf packetByteBuf = PacketByteBufs.create();
-                        PlayerStateDTO dto = playerData.toDto();
-                        NetworkHandler.writeData(packetByteBuf, dto);
+
+                        NetworkHandler.writeData(packetByteBuf, playerData);
                         ClientPlayNetworking.send(NetworkHandler.PLAYER_TEMPERATURE_TICK_TRANSMISSION, packetByteBuf);
                     }
                     tickCounter = 0; // 重置计数器

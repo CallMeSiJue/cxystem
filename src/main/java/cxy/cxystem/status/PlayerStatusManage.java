@@ -8,6 +8,7 @@ import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.player.HungerManager;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,6 +67,14 @@ public class PlayerStatusManage {
 
 
     public static void reduceHungryIfNeed(PlayerEntity player, PlayerTempState playerData) {
+        if (playerData.playerTempStatus == PlayerTempStatus.COOL.getCode()) {
+            player.getHungerManager().addExhaustion(0.1f);
+        } else if (playerData.playerTempStatus == PlayerTempStatus.VERY_COOL.getCode()) {
+            player.getHungerManager().addExhaustion(0.2f);
+        }
+    }
+
+    public static void reduceThirstIfNeed(ServerPlayerEntity player, PlayerTempState playerData) {
         if (playerData.playerTempStatus == PlayerTempStatus.COOL.getCode()) {
             player.getHungerManager().addExhaustion(0.1f);
         } else if (playerData.playerTempStatus == PlayerTempStatus.VERY_COOL.getCode()) {

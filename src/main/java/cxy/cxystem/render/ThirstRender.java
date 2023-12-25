@@ -11,7 +11,7 @@ import net.minecraft.client.render.GameRenderer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
 
-public class ThirdRender {
+public class ThirstRender {
     private static final Identifier THIRST_HUD = new Identifier(CxysTem.MOD_ID, "textures/gui/thirst/thirst_icons.png");
 
     public static void renderThird(DrawContext drawContext, float tickDelta) {
@@ -35,7 +35,7 @@ public class ThirdRender {
 
 
         // Get the thirstValue
-        int thirstValue = 20;
+        int thirstValue = playerData.thirstValue;
 
         // If the player currently is in a hot biome for enough time or in The Nether
         int hotXFactor = 0;

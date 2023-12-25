@@ -1,7 +1,6 @@
 package cxy.cxystem.netWork.packet;
 
 import cxy.cxystem.TemHandler;
-import cxy.cxystem.dto.PlayerStateDTO;
 import cxy.cxystem.dto.PlayerTempState;
 import cxy.cxystem.netWork.NetworkHandler;
 import cxy.cxystem.persistence.PlayerTempSL;
@@ -34,7 +33,7 @@ public class PlayerTemperatureServerHandler {
         playerState.playerTempStatus = TemHandler.getPlayerTemperatureStatus(player, playerState.feelTemp).getCode();
 
         // 处理伤害
-        if (playerState.freezeCount > 140) {
+        if (playerState.freezeCount > 140 || playerState.hotCount > 240) {
             player.damage(player.getWorld().getDamageSources().freeze(), 0.5f);
             if (player.isDead()) {
                 playerState.reset();
@@ -42,20 +41,15 @@ public class PlayerTemperatureServerHandler {
         }
         // 处理减速
 
-//        PlayerStatusManage.removePowderSnowSlow(player);
-//        PlayerStatusManage.addPowderSnowSlowIfNeeded(player, playerState);
         PlayerStatusManage.reduceHungryIfNeed(player, playerState);
-
+        PlayerStatusManage.reduceThirstIfNeed(player, playerState);
         // 发送数据包到客户端
         PacketByteBuf sendData = PacketByteBufs.create();
         sendData.writeDouble(tem);
         //
-        PlayerStateDTO dto = new PlayerStateDTO();
-        dto.setFeelTemp(playerState.feelTemp);
-        dto.setPlayerTempStatus(playerState.playerTempStatus);
-        dto.setFreezeCount(playerState.freezeCount);
+
         //
-        NetworkHandler.writeData(sendData, dto);
+        NetworkHandler.writeData(sendData, playerState);
         ServerPlayNetworking.send(player, NetworkHandler.PLAYER_TEMPERATURE_TICK_TRANSMISSION, sendData);
     }
 }

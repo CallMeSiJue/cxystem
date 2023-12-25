@@ -1,6 +1,6 @@
 package cxy.cxystem.netWork.packet;
 
-import cxy.cxystem.TemHandler;
+import cxy.cxystem.client.CxysTemClient;
 import cxy.cxystem.dto.PlayerTempState;
 import cxy.cxystem.netWork.NetworkHandler;
 import cxy.cxystem.status.PlayerTempStatus;
@@ -35,9 +35,10 @@ public class PlayerTemperatureClientHandler {
                         // 根据接收到的温度数据更新客户端，比如HUD
                         if (client.player != null) {
 
-                            PlayerTempStatus newStatus = TemHandler.getPlayerTemperatureStatus(client.player, playerData.feelTemp);
-                            if (playerData.playerTempStatus != newStatus.getCode()) {
-                                client.player.sendMessage(Text.of(newStatus.getMessage()));
+
+                            if (playerData.playerTempStatus != CxysTemClient.playerClientOldStatusCode) {
+                                client.player.sendMessage(Text.of(PlayerTempStatus.getByCode(playerData.playerTempStatus).getMessage()));
+                                CxysTemClient.playerClientOldStatusCode = playerData.playerTempStatus;
                             }
 
                         }

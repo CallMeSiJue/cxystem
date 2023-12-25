@@ -1,6 +1,5 @@
 package cxy.cxystem;
 
-import cxy.cxystem.dto.PlayerStateDTO;
 import cxy.cxystem.dto.PlayerTempState;
 import cxy.cxystem.netWork.NetworkHandler;
 import cxy.cxystem.persistence.PlayerTempSL;
@@ -29,12 +28,9 @@ public class CxysTem implements ModInitializer {
             Double environmentTemperature = TemHandler.getEnvironmentTemperature(server, handler.getPlayer());
             data.writeDouble(environmentTemperature);
             //
-            PlayerStateDTO dto = new PlayerStateDTO();
-            dto.setFeelTemp(playerState.feelTemp);
-            dto.setPlayerTempStatus(playerState.playerTempStatus);
-            dto.setFreezeCount(playerState.freezeCount);
+
             //
-            NetworkHandler.writeData(data, dto);
+            NetworkHandler.writeData(data, playerState);
             server.execute(() -> {
                 ServerPlayNetworking.send(handler.getPlayer(), NetworkHandler.PLAYER_TEMPERATURE_TICK_TRANSMISSION, data);
             });
