@@ -18,10 +18,10 @@ import java.util.UUID;
  * 建议服务端调用
  */
 public class PlayerStatusManage {
-   
+
     private static final Logger log = LoggerFactory.getLogger(FreezeEffectRenderer.class);
     private static final Identifier FREEZE_TEXTURE = new Identifier(CxysTem.MOD_ID, "textures/effect/freeze.png");
-    private static final UUID POWDER_SNOW_SLOW_ID = UUID.fromString("1eaf83ff-7207-4596-b37a-d7a07b3ec4ce");
+    private static final UUID POWDER_SNOW_SLOW_ID = UUID.fromString("1eaf83ff-7207-4526-b37a-d7a07b3ec4ce");
 
     public static void reduceHunger(PlayerEntity player, double amount) {
         HungerManager hungerManager = player.getHungerManager();

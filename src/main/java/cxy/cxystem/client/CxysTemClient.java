@@ -37,6 +37,9 @@ public class CxysTemClient implements ClientModInitializer {
 
             // 数据处理
             if (client.world != null) {
+                if (client.player == null) {
+                    return;
+                }
                 tickCounter++;
                 if (tickCounter >= 20) {
                     boolean paused = client.isInSingleplayer() && client.isPaused();
