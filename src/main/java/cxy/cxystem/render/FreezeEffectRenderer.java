@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import cxy.cxystem.CxysTem;
 import cxy.cxystem.client.CxysTemClient;
 import cxy.cxystem.dto.PlayerTempState;
+import cxy.cxystem.status.PlayerStatusManage;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -25,11 +26,13 @@ public class FreezeEffectRenderer {
             return;
         }
         if (playerData.freezeCount > 40) {
-            float freezePercent = getFreezePercent(playerData.freezeCount);
+            float freezePercent = PlayerStatusManage.getFreezePercent(playerData.freezeCount);
             int scaledWidth = mc.getWindow().getScaledWidth();
             int scaledHeight = mc.getWindow().getScaledHeight();
             renderOverlay(drawContext, FREEZE_TEXTURE, freezePercent, scaledWidth, scaledHeight);
         }
+        PlayerStatusManage.removePowderSnowSlow(mc.player);
+        PlayerStatusManage.addPowderSnowSlowIfNeeded(mc.player, playerData);
     }
 
     public static void renderOverlay(DrawContext context, Identifier texture, float opacity, int x1, int x2) {
@@ -40,16 +43,6 @@ public class FreezeEffectRenderer {
         RenderSystem.depthMask(true);
         RenderSystem.enableDepthTest();
         context.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
-    }
-
-    private static float getFreezePercent(int freezeCount) {
-        if (freezeCount > 200) {
-            freezeCount = 200;
-        }
-
-        // 实现获取冻结百分比的逻辑
-        // 例如：return player.getTicksFrozen() / (float) player.getMaxFreezeTime();
-        return freezeCount / 200f;
     }
 
 

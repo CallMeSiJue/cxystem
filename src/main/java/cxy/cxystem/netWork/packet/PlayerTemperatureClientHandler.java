@@ -19,7 +19,6 @@ public class PlayerTemperatureClientHandler {
 
     private static final Logger log = LoggerFactory.getLogger(PlayerTemperatureClientHandler.class);
 
-
     public static void receive(PlayerTempState playerData) {
 
         ClientPlayNetworking.registerGlobalReceiver(
@@ -40,7 +39,7 @@ public class PlayerTemperatureClientHandler {
                             if (playerData.playerTempStatus != newStatus.getCode()) {
                                 client.player.sendMessage(Text.of(newStatus.getMessage()));
                             }
-                          
+
                         }
                     });
 

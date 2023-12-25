@@ -28,4 +28,11 @@ public class PlayerTempState {
 
         return dto;
     }
+
+
+    public void reset() {
+        this.freezeCount = 0;
+        this.feelTemp = 26d;
+        this.playerTempStatus = 0;
+    }
 }
