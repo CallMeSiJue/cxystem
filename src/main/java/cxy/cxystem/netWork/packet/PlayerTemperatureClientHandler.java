@@ -26,7 +26,7 @@ public class PlayerTemperatureClientHandler {
                 (client, handler, buf, responseSender) -> {
                     // 从数据包中读取数据
                     double temperature = buf.readDouble();
-                    NetworkHandler.readData(playerData, buf);
+                    PlayerTempState.readData(playerData, buf);
 
                     log.info("  的环境温度：{},体感温度：{}", temperature, playerData.feelTemp);
                     // 在客户端主线程上执行操作

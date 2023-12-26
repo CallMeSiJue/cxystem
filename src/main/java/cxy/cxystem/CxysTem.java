@@ -30,7 +30,7 @@ public class CxysTem implements ModInitializer {
             //
 
             //
-            NetworkHandler.writeData(data, playerState);
+            PlayerTempState.writeData(data, playerState);
             server.execute(() -> {
                 ServerPlayNetworking.send(handler.getPlayer(), NetworkHandler.PLAYER_TEMPERATURE_TICK_TRANSMISSION, data);
             });

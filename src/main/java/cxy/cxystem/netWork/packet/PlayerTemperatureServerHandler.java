@@ -27,29 +27,26 @@ public class PlayerTemperatureServerHandler {
 
     public static void receive(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender) {
         PlayerTempState playerState = PlayerTempSL.getPlayerState(player);
-        NetworkHandler.readData(playerState, buf);
+        PlayerTempState.readData(playerState, buf);
         double tem = TemHandler.getEnvironmentTemperature(server, player);
         playerState.feelTemp = TemHandler.getPlayerFeelTemp(player, tem);
         playerState.playerTempStatus = TemHandler.getPlayerTemperatureStatus(player, playerState.feelTemp).getCode();
 
         // 处理伤害
-        if (playerState.freezeCount > 140 || playerState.hotCount > 240) {
-            player.damage(player.getWorld().getDamageSources().freeze(), 0.5f);
-            if (player.isDead()) {
-                playerState.reset();
-            }
-        }
-        // 处理减速
-
+        PlayerStatusManage.coldDamageIfNeed(player, playerState);
+        PlayerStatusManage.hotDamageIfNeed(player, playerState);
         PlayerStatusManage.reduceHungryIfNeed(player, playerState);
         PlayerStatusManage.reduceThirstIfNeed(player, playerState);
+        PlayerStatusManage.applyNauseaEffectIfNeed(player, playerState);
         // 发送数据包到客户端
         PacketByteBuf sendData = PacketByteBufs.create();
         sendData.writeDouble(tem);
         //
 
         //
-        NetworkHandler.writeData(sendData, playerState);
+        PlayerTempState.writeData(sendData, playerState);
         ServerPlayNetworking.send(player, NetworkHandler.PLAYER_TEMPERATURE_TICK_TRANSMISSION, sendData);
     }
+
+
 }

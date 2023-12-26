@@ -54,7 +54,7 @@ public class CxysTemClient implements ClientModInitializer {
                         log.info("执行 发送消息");
                         PacketByteBuf packetByteBuf = PacketByteBufs.create();
 
-                        NetworkHandler.writeData(packetByteBuf, playerData);
+                        PlayerTempState.writeData(packetByteBuf, playerData);
                         ClientPlayNetworking.send(NetworkHandler.PLAYER_TEMPERATURE_TICK_TRANSMISSION, packetByteBuf);
                     }
                     tickCounter = 0; // 重置计数器

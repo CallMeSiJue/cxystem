@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import cxy.cxystem.CxysTem;
 import cxy.cxystem.client.CxysTemClient;
 import cxy.cxystem.dto.PlayerTempState;
+import cxy.cxystem.status.PlayerTempStatus;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -41,9 +42,9 @@ public class ThirstRender {
         int hotXFactor = 0;
         int hotYFactor = 0;
 
-        if (playerData.playerTempStatus == 2) {
+        if (playerData.playerTempStatus == PlayerTempStatus.HOT.getCode()) {
             hotYFactor = 9;
-        } else if (playerData.playerTempStatus == 3) {
+        } else if (playerData.playerTempStatus == PlayerTempStatus.VERY_HOT.getCode()) {
             hotXFactor = 36;
         }
 
@@ -110,7 +111,7 @@ public class ThirstRender {
     }
 
     private static int getBounceFactor(PlayerEntity player, int ticks, PlayerTempState playerData) {
-        if (playerData.playerTempStatus == 2 || playerData.playerTempStatus == 3) {
+        if (playerData.playerTempStatus == PlayerTempStatus.HOT.getCode() || playerData.playerTempStatus == PlayerTempStatus.VERY_HOT.getCode()) {
             double wave = Math.sin(ticks / (double) 20); // 20可以调整为更高或更低以改变速度
             return (int) (wave * 3); // 3可以调整以改变跳动的幅度
         } else {

@@ -6,6 +6,8 @@ import cxy.cxystem.render.FreezeEffectRenderer;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.HungerManager;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -30,6 +32,24 @@ public class PlayerStatusManage {
         // 注意检查饥饿度不要低于0
         if (hungerManager.getFoodLevel() < 0) {
             hungerManager.setFoodLevel(0);
+        }
+    }
+
+    public static void coldDamageIfNeed(ServerPlayerEntity player, PlayerTempState playerState) {
+        if (playerState.freezeCount > 140) {
+            player.damage(player.getWorld().getDamageSources().freeze(), 0.5f);
+            if (player.isDead()) {
+                playerState.reset();
+            }
+        }
+    }
+
+    public static void hotDamageIfNeed(ServerPlayerEntity player, PlayerTempState playerState) {
+        if (playerState.thirstValue == 0) {
+            player.damage(player.getWorld().getDamageSources().hotFloor(), 0.5f);
+            if (player.isDead()) {
+                playerState.reset();
+            }
         }
     }
 
@@ -75,10 +95,32 @@ public class PlayerStatusManage {
     }
 
     public static void reduceThirstIfNeed(ServerPlayerEntity player, PlayerTempState playerData) {
-        if (playerData.playerTempStatus == PlayerTempStatus.HOT.getCode()) {
+        if (playerData.playerTempStatus == PlayerTempStatus.HOT.getCode() && playerData.thirstCount <= 0) {
             playerData.thirstValue -= 1;
-        } else if (playerData.playerTempStatus == PlayerTempStatus.VERY_COOL.getCode()) {
+            if (playerData.thirstValue < 0) {
+                playerData.thirstValue = 0;
+            }
+            playerData.thirstCount = 10;
+        } else if (playerData.playerTempStatus == PlayerTempStatus.VERY_HOT.getCode() && playerData.thirstCount <= 0) {
             playerData.thirstValue -= 2;
+            if (playerData.thirstValue < 0) {
+                playerData.thirstValue = 0;
+            }
+            playerData.thirstCount = 10;
+        } else {
+            playerData.thirstCount -= 1;
         }
+
+    }
+
+    public static void applyNauseaEffectIfNeed(PlayerEntity player, PlayerTempState playerData) {
+        if (playerData.thirstValue != 0) {
+            return;
+        }
+        int duration = 200; // 持续时间，以tick为单位，20 tick = 1秒
+        int amplifier = playerData.playerTempStatus - 1; // 效果等级，1 表示 Nausea II
+
+        StatusEffectInstance nausea = new StatusEffectInstance(StatusEffects.NAUSEA, duration, amplifier);
+        player.addStatusEffect(nausea);
     }
 }
