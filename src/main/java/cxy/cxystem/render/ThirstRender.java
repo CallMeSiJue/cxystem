@@ -110,12 +110,12 @@ public class ThirstRender {
     }
 
     private static int getBounceFactor(PlayerEntity player, int ticks, PlayerTempState playerData) {
-        if (playerData.playerTempStatus == 2) {
-            return player.getWorld().random.nextInt(3) - 1;
-        } else if (playerData.playerTempStatus == 3) {
-            return player.getWorld().random.nextInt(5) - 1;
+        if (playerData.playerTempStatus == 2 || playerData.playerTempStatus == 3) {
+            double wave = Math.sin(ticks / (double) 20); // 20可以调整为更高或更低以改变速度
+            return (int) (wave * 3); // 3可以调整以改变跳动的幅度
         } else {
             return 0;
         }
     }
+
 }

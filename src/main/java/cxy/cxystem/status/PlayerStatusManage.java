@@ -75,10 +75,10 @@ public class PlayerStatusManage {
     }
 
     public static void reduceThirstIfNeed(ServerPlayerEntity player, PlayerTempState playerData) {
-        if (playerData.playerTempStatus == PlayerTempStatus.COOL.getCode()) {
-            player.getHungerManager().addExhaustion(0.1f);
+        if (playerData.playerTempStatus == PlayerTempStatus.HOT.getCode()) {
+            playerData.thirstValue -= 1;
         } else if (playerData.playerTempStatus == PlayerTempStatus.VERY_COOL.getCode()) {
-            player.getHungerManager().addExhaustion(0.2f);
+            playerData.thirstValue -= 2;
         }
     }
 }
