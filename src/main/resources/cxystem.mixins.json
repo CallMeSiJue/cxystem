@@ -4,6 +4,10 @@
   "package": "cxy.cxystem.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "HoneyBottleItemMixin",
+    "ItemMixin",
+    "MilkBucketItemMixin",
+    "PotionItemMixin"
   ],
   "client": [
   ],

@@ -27,7 +27,7 @@ public class PlayerTemperatureServerHandler {
 
     public static void receive(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender) {
         PlayerTempState playerState = PlayerTempSL.getPlayerState(player);
-        PlayerTempState.readData(playerState, buf);
+        PlayerTempState.serverReadData(playerState, buf);
         double tem = TemHandler.getEnvironmentTemperature(server, player);
         playerState.feelTemp = TemHandler.getPlayerFeelTemp(player, tem);
         playerState.playerTempStatus = TemHandler.getPlayerTemperatureStatus(player, playerState.feelTemp).getCode();

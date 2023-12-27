@@ -24,11 +24,13 @@ public class PlayerTempSL extends PersistentState {
     );
     public HashMap<UUID, PlayerTempState> players = new HashMap<>();
 
+
     public static PlayerTempState getPlayerState(LivingEntity player) {
         PlayerTempSL serverState = getServerState(player.getWorld().getServer());
 
         return serverState.players.computeIfAbsent(player.getUuid(), uuid -> new PlayerTempState());
     }
+
 
     public static PlayerTempSL createFromNbt(NbtCompound tag) {
         PlayerTempSL state = new PlayerTempSL();
@@ -36,7 +38,11 @@ public class PlayerTempSL extends PersistentState {
         playersNbt.getKeys().forEach(key -> {
             PlayerTempState playerTempState = new PlayerTempState();
             playerTempState.feelTemp = playersNbt.getCompound(key).getDouble("playerFeelTemp");
-
+            playerTempState.thirstValue = playersNbt.getCompound(key).getInt("playerThirstValue");
+            playerTempState.freezeCount = playersNbt.getCompound(key).getInt("playerFreezeCount");
+            playerTempState.hotCount = playersNbt.getCompound(key).getInt("playerHotCount");
+            playerTempState.thirstCount = playersNbt.getCompound(key).getInt("playerThirstCount");
+            playerTempState.playerTempStatus = playersNbt.getCompound(key).getInt("playerTempStatus");
             UUID uuid = UUID.fromString(key);
             state.players.put(uuid, playerTempState);
         });
@@ -67,7 +73,11 @@ public class PlayerTempSL extends PersistentState {
             NbtCompound playerNbt = new NbtCompound();
 
             playerNbt.putDouble("playerFeelTemp", playerData.feelTemp);
-
+            playerNbt.putInt("playerThirstValue", playerData.thirstValue);
+            playerNbt.putInt("playerFreezeCount", playerData.freezeCount);
+            playerNbt.putInt("playerHotCount", playerData.hotCount);
+            playerNbt.putInt("playerThirstCount", playerData.thirstCount);
+            playerNbt.putInt("playerTempStatus", playerData.playerTempStatus);
             playersNbt.put(uuid.toString(), playerNbt);
         });
         nbt.put("players", playersNbt);

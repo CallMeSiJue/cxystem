@@ -9,7 +9,11 @@ import cxy.cxystem.status.PlayerTempStatus;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.CampfireBlock;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
@@ -19,6 +23,7 @@ import net.minecraft.world.biome.Biome;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -43,7 +48,7 @@ public class TemHandler {
     /**
      * 基本适应温度
      */
-    public static final double BASIC_ADAPTATION_TEMP = 12;
+    public static final double BASIC_ADAPTATION_TEMP = 8;
 
     /**
      * 玩家的每秒产生的体温
@@ -239,7 +244,10 @@ public class TemHandler {
         double rise = player.isSprinting() ? 2 : 1;
         PlayerTempState playerState = PlayerTempSL.getPlayerState(player);
         double playerAdaption = getPlayerAdaption(player);
-
+        int totalFireProtectionLevel = getTotalFireProtectionLevel(player);
+        if (envTemp > 26) {
+            envTemp = Math.max(26, envTemp - totalFireProtectionLevel * 5);
+        }
         if (envTemp < playerState.feelTemp) {
             playerState.feelTemp += BASIC_PLAYER_TEMP_RISE * rise
                     +
@@ -260,6 +268,22 @@ public class TemHandler {
         return playerState.feelTemp;
     }
 
+    public static int getTotalFireProtectionLevel(PlayerEntity player) {
+        int totalFireProtectionLevel = 0;
+
+        // 遍历玩家的盔甲栏
+        for (ItemStack armorItem : player.getInventory().armor) {
+            if (!armorItem.isEmpty() && armorItem.hasEnchantments()) {
+                // 检查火焰保护附魔并累加其等级
+                Map<Enchantment, Integer> enchantments = EnchantmentHelper.get(armorItem);
+                if (enchantments.containsKey(Enchantments.FIRE_PROTECTION)) {
+                    totalFireProtectionLevel += enchantments.get(Enchantments.FIRE_PROTECTION);
+                }
+            }
+        }
+
+        return totalFireProtectionLevel;
+    }
 
     public static double getPlayerBiomeTemperature(PlayerEntity player) {
         World world = player.getWorld(); // 获取玩家所在的世界

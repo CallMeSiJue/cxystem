@@ -36,6 +36,7 @@ public class CxysTem implements ModInitializer {
             });
         });
 
+        //ItemUseEvenHandler.registerEvents();
 
     }
 

@@ -53,6 +53,11 @@ public class PlayerStatusManage {
         }
     }
 
+    public static boolean hasHireResistance(ServerPlayerEntity player) {
+        return player.hasStatusEffect(StatusEffects.FIRE_RESISTANCE);
+    }
+
+
     public static void addPowderSnowSlowIfNeeded(PlayerEntity player, PlayerTempState playerData) {
         int i;
         if (playerData.freezeCount > 0) {
@@ -95,6 +100,10 @@ public class PlayerStatusManage {
     }
 
     public static void reduceThirstIfNeed(ServerPlayerEntity player, PlayerTempState playerData) {
+        //  有火焰保护效果的 不考虑减少 口渴值
+        if (hasHireResistance(player)) {
+            return;
+        }
         if (playerData.playerTempStatus == PlayerTempStatus.HOT.getCode() && playerData.thirstCount <= 0) {
             playerData.thirstValue -= 1;
             if (playerData.thirstValue < 0) {

@@ -27,16 +27,12 @@ public class CxysTemClient implements ClientModInitializer {
 
             // 处理状态造成的变化
             if (playerData.playerTempStatus == PlayerTempStatus.VERY_COOL.getCode()) {
-                if (playerData.freezeCount < 200) {
-                    playerData.freezeCount += 1;
-                }
+                playerData.addFreezeCount(1);
             } else if (playerData.freezeCount > 0) {
                 playerData.freezeCount -= 2;
             }
             if (playerData.playerTempStatus == PlayerTempStatus.VERY_HOT.getCode()) {
-                if (playerData.hotCount < 300) {
-                    playerData.hotCount += 1;
-                }
+                playerData.addHotCount(1);
             } else if (playerData.hotCount > 0) {
                 playerData.hotCount -= 2;
             }
@@ -54,7 +50,7 @@ public class CxysTemClient implements ClientModInitializer {
                         log.info("执行 发送消息");
                         PacketByteBuf packetByteBuf = PacketByteBufs.create();
 
-                        PlayerTempState.writeData(packetByteBuf, playerData);
+                        PlayerTempState.clientWriteData(packetByteBuf, playerData);
                         ClientPlayNetworking.send(NetworkHandler.PLAYER_TEMPERATURE_TICK_TRANSMISSION, packetByteBuf);
                     }
                     tickCounter = 0; // 重置计数器
