@@ -19,6 +19,7 @@ public class FreezeEffectRenderer {
     public static void register() {
         HudRenderCallback.EVENT.register(FreezeEffectRenderer::renderFreezeEffect);
         HudRenderCallback.EVENT.register(ThirstRender::renderThird);
+        HudRenderCallback.EVENT.register(TempGlassRender::renderGlass);
     }
 
 

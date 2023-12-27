@@ -40,7 +40,7 @@ public class TempConfig {
         helmetTempItems = List.of(
                 new ArmorTemp("leather_helmet", 1d, 0.95),
                 new ArmorTemp("iron_helmet", 1d, 1.2),
-                new ArmorTemp("gold_helmet", 1d, 1.3),
+                new ArmorTemp("golden_helmet", 1d, 1.3),
                 new ArmorTemp("diamond_helmet", 1d, 1.05),
                 new ArmorTemp("netherite_helmet", 1d, 1.1)
         );
@@ -49,7 +49,7 @@ public class TempConfig {
         chestplateTempItems = List.of(
                 new ArmorTemp("leather_chestplate", 3d, 0.85),
                 new ArmorTemp("iron_chestplate", 3d, 1.1),
-                new ArmorTemp("gold_chestplate", 3d, 1.25),
+                new ArmorTemp("golden_chestplate", 3d, 1.25),
                 new ArmorTemp("diamond_chestplate", 3d, 1.0),
                 new ArmorTemp("netherite_chestplate", 3d, 1.05)
         );
@@ -58,7 +58,7 @@ public class TempConfig {
         leggingTempItems = List.of(
                 new ArmorTemp("leather_leggings", 2d, 0.88),
                 new ArmorTemp("iron_leggings", 2d, 1.15),
-                new ArmorTemp("gold_leggings", 2d, 1.3),
+                new ArmorTemp("golden_leggings", 2d, 1.3),
                 new ArmorTemp("diamond_leggings", 2d, 1.02),
                 new ArmorTemp("netherite_leggings", 2d, 1.08)
         );
@@ -67,7 +67,7 @@ public class TempConfig {
         bootTempItems = List.of(
                 new ArmorTemp("leather_boots", 1d, 0.92),
                 new ArmorTemp("iron_boots", 1d, 1.2),
-                new ArmorTemp("gold_boots", 1d, 1.4),
+                new ArmorTemp("golden_boots", 1d, 1.4),
                 new ArmorTemp("diamond_boots", 1d, 1.05),
                 new ArmorTemp("netherite_boots", 1d, 1.1)
         );

@@ -3,9 +3,7 @@ package cxy.cxystem.netWork.packet;
 import cxy.cxystem.client.CxysTemClient;
 import cxy.cxystem.dto.PlayerTempState;
 import cxy.cxystem.netWork.NetworkHandler;
-import cxy.cxystem.status.PlayerTempStatus;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.text.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,7 +35,6 @@ public class PlayerTemperatureClientHandler {
 
 
                             if (playerData.playerTempStatus != CxysTemClient.playerClientOldStatusCode) {
-                                client.player.sendMessage(Text.of(PlayerTempStatus.getByCode(playerData.playerTempStatus).getMessage()));
                                 CxysTemClient.playerClientOldStatusCode = playerData.playerTempStatus;
                             }
 

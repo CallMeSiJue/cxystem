@@ -243,30 +243,61 @@ public class TemHandler {
         double lose = player.isWet() ? 2 : 1;
         double rise = player.isSprinting() ? 2 : 1;
         PlayerTempState playerState = PlayerTempSL.getPlayerState(player);
-        double playerAdaption = getPlayerAdaption(player);
+        double playerAdaption = getPlayerAdaption(player); // 玩家适应系数
         int totalFireProtectionLevel = getTotalFireProtectionLevel(player);
+
+        // 考虑火焰保护对高温的缓冲
         if (envTemp > 26) {
-            envTemp = Math.max(26, envTemp - totalFireProtectionLevel * 5);
+            envTemp = Math.max(26, envTemp - totalFireProtectionLevel * 4);
         }
-        if (envTemp < playerState.feelTemp) {
-            playerState.feelTemp += BASIC_PLAYER_TEMP_RISE * rise
-                    +
-                    2 * BASIC_PLAYER_TEMP_LOSE * lose * playerAdaption;
-            log.info("玩家体感温度变化因子流失-升温:{}-{}", BASIC_PLAYER_TEMP_RISE * rise, 2 * BASIC_PLAYER_TEMP_LOSE * lose * playerAdaption);
-        } else if (envTemp > playerState.feelTemp) {
-            playerState.feelTemp += 2 * BASIC_PLAYER_TEMP_RISE * rise
-                    +
-                    BASIC_PLAYER_TEMP_LOSE * lose * playerAdaption;
-            log.info("玩家体感温度变化因子流失-:{}-{}", 2 * BASIC_PLAYER_TEMP_RISE * rise, BASIC_PLAYER_TEMP_LOSE * lose * playerAdaption);
-        } else {
-            playerState.feelTemp += BASIC_PLAYER_TEMP_RISE * rise
-                    +
-                    BASIC_PLAYER_TEMP_LOSE * lose * playerAdaption;
+
+
+        // 根据盔甲的适应系数调整体感温度变化速率
+        if (envTemp > playerState.feelTemp) {
+            rise = rise * playerAdaption; // 盔甲加速升温
+        } else if (envTemp < playerState.feelTemp) {
+            lose = lose * playerAdaption; // 盔甲加速降温
         }
+
+        // 计算体感温度的变化
+
+        double tempChange = BASIC_PLAYER_TEMP_RISE * rise
+                + BASIC_PLAYER_TEMP_LOSE * lose;
+        playerState.feelTemp += tempChange;
+        log.info("玩家体感温度变化:{}，升温因子:{}，失温因子：{}", envTemp, rise, lose);
 
 
         return playerState.feelTemp;
     }
+
+//    public static Double getPlayerFeelTemp(PlayerEntity player, Double envTemp) {
+//        double lose = player.isWet() ? 2 : 1;
+//        double rise = player.isSprinting() ? 2 : 1;
+//        PlayerTempState playerState = PlayerTempSL.getPlayerState(player);
+//        double playerAdaption = getPlayerAdaption(player);
+//        int totalFireProtectionLevel = getTotalFireProtectionLevel(player);
+//        if (envTemp > 26) {
+//            envTemp = Math.max(26, envTemp - totalFireProtectionLevel * 5);
+//        }
+//        if (envTemp < playerState.feelTemp) {
+//            playerState.feelTemp += BASIC_PLAYER_TEMP_RISE * rise
+//                    +
+//                    2 * BASIC_PLAYER_TEMP_LOSE * lose * playerAdaption;
+//            log.info("玩家体感温度变化因子流失-升温:{}-{}", BASIC_PLAYER_TEMP_RISE * rise, 2 * BASIC_PLAYER_TEMP_LOSE * lose * playerAdaption);
+//        } else if (envTemp > playerState.feelTemp) {
+//            playerState.feelTemp += 2 * BASIC_PLAYER_TEMP_RISE * rise
+//                    +
+//                    BASIC_PLAYER_TEMP_LOSE * lose * playerAdaption;
+//            log.info("玩家体感温度变化因子流失-:{}-{}", 2 * BASIC_PLAYER_TEMP_RISE * rise, BASIC_PLAYER_TEMP_LOSE * lose * playerAdaption);
+//        } else {
+//            playerState.feelTemp += BASIC_PLAYER_TEMP_RISE * rise
+//                    +
+//                    BASIC_PLAYER_TEMP_LOSE * lose * playerAdaption;
+//        }
+//
+//
+//        return playerState.feelTemp;
+//    }
 
     public static int getTotalFireProtectionLevel(PlayerEntity player) {
         int totalFireProtectionLevel = 0;
