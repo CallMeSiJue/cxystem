@@ -48,7 +48,7 @@ public class TemHandler {
     /**
      * 基本适应温度
      */
-    public static final double BASIC_ADAPTATION_TEMP = 8;
+    public static final double BASIC_ADAPTATION_TEMP = CxysTem.CONFIG.baseAdaptTemp;
 
     /**
      * 玩家的每秒产生的体温

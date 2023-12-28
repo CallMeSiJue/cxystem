@@ -1,5 +1,6 @@
 package cxy.cxystem;
 
+import cxy.cxystem.config.ModConfig;
 import cxy.cxystem.dto.PlayerTempState;
 import cxy.cxystem.netWork.NetworkHandler;
 import cxy.cxystem.persistence.PlayerTempSL;
@@ -14,8 +15,9 @@ import org.slf4j.LoggerFactory;
 
 public class CxysTem implements ModInitializer {
 
-    public static final String MOD_ID = "cxys_tem";
+    public static final String MOD_ID = "cxystem";
     public static final Identifier INITIAL_SYNC = new Identifier(MOD_ID, "initial_sync");
+    public static final ModConfig CONFIG = new ModConfig();
     private static final Logger log = LoggerFactory.getLogger(CxysTem.class);
 
     @Override

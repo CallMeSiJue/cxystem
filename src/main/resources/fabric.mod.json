@@ -2,12 +2,12 @@
   "schemaVersion": 1,
   "id": "cxystem",
   "version": "${version}",
-  "name": "cxysTem",
+  "name": "cxys_tem",
   "description": "",
   "authors": [],
   "contact": {},
   "license": "All-Rights-Reserved",
-  "icon": "assets/cxystem/icon.png",
+  "icon": "assets/cxys_tem/icon.png",
   "environment": "*",
   "entrypoints": {
     "client": [
@@ -23,6 +23,7 @@
   "depends": {
     "fabricloader": ">=${loader_version}",
     "fabric": "*",
-    "minecraft": "${minecraft_version}"
+    "minecraft": "${minecraft_version}",
+    "completeconfig": ">=2.4.0"
   }
 }
